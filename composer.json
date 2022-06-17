@@ -1,0 +1,39 @@
+{
+	"name": "kk-o/magic-helper",
+	"description": "Helper class with all magic",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Knut Kohl",
+			"email": "github@knutkohl.de"
+		}
+	],
+	"require-dev": {
+		"symfony/var-dumper": "^5.3",
+		"phpunit/phpunit": "^9",
+		"symfony/console": "^5.4"
+	},
+	"require": {
+		"php": ">=7.3",
+		"symfony/yaml": "^5.3",
+		"phpunit/php-code-coverage": "^9.2"
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Tests\\": "tests/"
+		}
+	},
+	"autoload": {
+		"psr-4": {
+			"": "src/"
+		},
+		"classmap": [
+			"src/"
+		]
+	},
+	"scripts": {
+		"cs": "phpcs -p -s --standard=PSR2 src",
+		"test": "vendor/bin/phpunit --do-not-cache-result --coverage-text --coverage-html coverage"
+	}
+}
