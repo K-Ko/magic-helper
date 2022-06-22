@@ -37,15 +37,6 @@ final class FlatTest extends TestCase
         $this->assertEquals('{"k":"v"}', (string) $magic);
     }
 
-    public function testMerge()
-    {
-        $magic = new Magic(['k' => ['k' => 'v']]);
-
-        $magic->merge('k', ['x' => 'y']);
-
-        $this->assertEquals(2, count($magic['k']));
-    }
-
     public function testNotExists()
     {
         $magic = new Magic();
