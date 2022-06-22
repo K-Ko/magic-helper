@@ -310,6 +310,14 @@ final class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSeri
     }
 
     /**
+     * Gets whole data as array
+     */
+    public function toArray(): array
+    {
+        return json_decode(json_encode($this->data), true);
+    }
+
+    /**
      * Save data serialized to a file, reload with load()
      *
      * @param  string  $filename

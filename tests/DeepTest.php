@@ -24,6 +24,15 @@ final class DeepTest extends TestCase
         $this->check(Magic::fromYAML('k: v' . PHP_EOL . 'a:' . PHP_EOL . '    k: v'));
     }
 
+    public function testToArray()
+    {
+        $data = ['k' => 'v', 'a' => ['k' => 'v']];
+
+        $magic = new Magic($data);
+
+        $this->assertSame($data, $magic->toArray());
+    }
+
     private function check(Magic $magic)
     {
         $this->assertEquals(2, count($magic));
