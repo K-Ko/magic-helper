@@ -24,6 +24,11 @@ final class FlatTest extends TestCase
         $this->check(Magic::fromYAML('k: v'));
     }
 
+    public function testCreateFlatFromString()
+    {
+        $this->check(Magic::fromString('k=v'));
+    }
+
     public function testCreateFlatFromIni()
     {
         $this->check(Magic::fromINI('k = v'));

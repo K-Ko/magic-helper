@@ -59,6 +59,22 @@ final class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSeri
     }
 
     /**
+     * Build a Magic instance from raw POST string.
+     *
+     * e.g. x=1&y=2
+     *
+     * @throws \Symfony\Component\Yaml\Exception\ParseException If the YAML is not valid
+     *
+     * @param string $input The string being parsed
+     */
+    public static function fromString(string $input): Magic
+    {
+        parse_str($input, $data);
+
+        return new self($data);
+    }
+
+    /**
      * Build a Magic instance from an INI string.
      *
      * To load an INI file use
