@@ -63,8 +63,6 @@ final class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSeri
      *
      * e.g. x=1&y=2
      *
-     * @throws \Symfony\Component\Yaml\Exception\ParseException If the YAML is not valid
-     *
      * @param string $input The string being parsed
      */
     public static function fromString(string $input): Magic
