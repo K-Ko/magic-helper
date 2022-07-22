@@ -13,7 +13,7 @@ use Stringable;
 use Symfony\Component\Yaml\Yaml;
 use Traversable;
 
-final class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable, Stringable
+class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable, Stringable
 {
     /**
      * Build a Magic instance from JSON string.
@@ -133,6 +133,8 @@ final class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSeri
         foreach ($data as $key => $value) {
             $this->set($key, $value);
         }
+
+        $this->bootstrap();
     }
 
     /**
@@ -340,6 +342,17 @@ final class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSeri
     public function save(string $filename): int
     {
         return file_put_contents($filename, self::$marker . PHP_EOL . serialize($this->data));
+    }
+
+    // ----------------------------------------------------------------------
+    // PROTECTED
+    // ----------------------------------------------------------------------
+
+    /**
+     * Overwrite in derived classes if needed
+     */
+    protected function bootstrap()
+    {
     }
 
     // ----------------------------------------------------------------------
