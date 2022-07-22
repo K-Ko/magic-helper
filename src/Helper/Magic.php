@@ -34,7 +34,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
         $input = json_decode($input, true, $depth, $flags);
 
         if (json_last_error() === JSON_ERROR_NONE) {
-            return new self($input);
+            return new static($input);
         }
 
         throw new InvalidArgumentException(json_last_error_msg(), 100);
@@ -55,7 +55,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public static function fromYAML(string $input, int $flags = 0): Magic
     {
-        return new self(Yaml::parse($input, $flags));
+        return new static(Yaml::parse($input, $flags));
     }
 
     /**
@@ -69,7 +69,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     {
         parse_str($input, $data);
 
-        return new self($data);
+        return new static($data);
     }
 
     /**
@@ -95,7 +95,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
         $input = @parse_ini_string($input, $sections, $mode);
 
         if ($input !== false) {
-            return new self($input);
+            return new static($input);
         }
 
         throw new InvalidArgumentException('Invalid INI string!', 101);
@@ -120,7 +120,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
             throw new InvalidArgumentException('Invalid file content!', 2);
         }
 
-        return new self(unserialize(trim(preg_replace($regex, '', $data))));
+        return new static(unserialize(trim(preg_replace($regex, '', $data))));
     }
 
     /**
@@ -153,7 +153,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function set(string $key, $value): Magic
     {
-        $this->data[$key] = is_array($value) ? new self($value) : $value;
+        $this->data[$key] = is_array($value) ? new static($value) : $value;
 
         return $this;
     }
@@ -168,7 +168,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function merge(string $key, array $values): Magic
     {
-        $this->exists($key) || $this->set($key, new self());
+        $this->exists($key) || $this->set($key, new static());
 
         $value = $this->get($key);
 
