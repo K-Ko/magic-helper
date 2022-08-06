@@ -54,6 +54,15 @@ final class FlatTest extends TestCase
         $this->assertEquals('y', $magic->get('x', 'y'));
     }
 
+    public function testSort()
+    {
+        $magic = new Magic(['z' => 'z']);
+        $magic['a'] = 'a';
+
+        $this->assertTrue($magic->sort());
+        $this->assertEquals(['a' => 'a', 'z' => 'z'], $magic->toArray());
+    }
+
     private function check(Magic $magic)
     {
         $this->assertEquals(1, count($magic));

@@ -344,6 +344,16 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
         return file_put_contents($filename, self::$marker . PHP_EOL . serialize($this->data));
     }
 
+    /**
+     * Sort data by keys
+     *
+     * @return bool
+     */
+    public function sort(): bool
+    {
+        return ksort($this->data);
+    }
+
     // ----------------------------------------------------------------------
     // PROTECTED
     // ----------------------------------------------------------------------
