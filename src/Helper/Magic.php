@@ -133,8 +133,6 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
         foreach ($data as $key => $value) {
             $this->set($key, $value);
         }
-
-        $this->bootstrap();
     }
 
     /**
@@ -352,17 +350,6 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     public function sort(): bool
     {
         return ksort($this->data);
-    }
-
-    // ----------------------------------------------------------------------
-    // PROTECTED
-    // ----------------------------------------------------------------------
-
-    /**
-     * Overwrite in derived classes if needed
-     */
-    protected function bootstrap()
-    {
     }
 
     // ----------------------------------------------------------------------
