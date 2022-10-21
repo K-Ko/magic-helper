@@ -306,29 +306,37 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     /**
      * Specify data which should be serialized to JSON
      *
+     * Overwrite toArray() for special use cases
+     *
      * Implements \JsonSerializable
      */
-    public function jsonSerialize()
+    final public function jsonSerialize()
     {
-        return $this->data;
+        return $this->toArray();
     }
 
     /**
      * Gets a JSON string representation of the object
      *
+     * Overwrite toArray() for special use cases
+     *
      * Implements \Stringable
      */
-    public function __toString(): string
+    final public function __toString(): string
     {
-        return json_encode($this->data);
+        return json_encode($this->toArray());
     }
 
     /**
-     * Gets whole data as array
+     * Gets whole data as array, sort keys
      */
     public function toArray(): array
     {
-        return json_decode(json_encode($this->data), true);
+        $data = json_decode(json_encode($this->data), true);
+
+        ksort($data);
+
+        return $data;
     }
 
     /**
