@@ -62,6 +62,18 @@ final class SetterGetterTest extends TestCase
         $this->assertNull($magic['k']);
     }
 
+    public function testSetterGetterByMagicCall()
+    {
+        $magic = new Magic();
+
+        $magic->setCompoundKey('v');
+
+        $this->assertTrue($magic->exists('compound_key'));
+        $this->assertEquals('v', $magic->getCompoundKey());
+
+        $this->assertNull($magic->getInvalidKey());
+    }
+
     private function check(Magic $magic)
     {
         $this->assertEquals(1, count($magic));

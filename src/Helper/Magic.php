@@ -4,6 +4,7 @@ namespace Helper;
 
 use ArrayAccess;
 use ArrayIterator;
+use BadMethodCallException;
 use Countable;
 use Exception;
 use InvalidArgumentException;
@@ -241,6 +242,19 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     public function __isset(string $key): bool
     {
         return $this->exists($key);
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        if (!preg_match('~^(set|get)(.+)$~', $name, $matches)) {
+            throw new BadMethodCallException('Unknown method "' . $name . '"()');
+        }
+
+        $key = strtolower(trim(preg_replace('~[A-Z]~', '_$0', $matches[2]), '_'));
+
+        return $matches[1] === 'get'
+            ? $this->get($key, $arguments[0] ?? null)
+            : $this->set($key, $arguments[0] ?? null);
     }
 
     /**
