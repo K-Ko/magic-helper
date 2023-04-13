@@ -152,7 +152,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function set(string $key, $value): Magic
     {
-        $this->data[$key] = is_array($value) ? new static($value) : $value;
+        $this->data[$key] = is_array($value) ? new self($value) : $value;
 
         return $this;
     }
@@ -167,7 +167,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function merge(string $key, array $values): Magic
     {
-        $this->exists($key) || $this->set($key, new static());
+        $this->exists($key) || $this->set($key, new self());
 
         $value = $this->get($key);
 
