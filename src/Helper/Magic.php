@@ -338,7 +338,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     final public function __toString(): string
     {
-        return json_encode($this->toArray());
+        return json_encode($this->data);
     }
 
     /**
@@ -346,11 +346,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function toArray(): array
     {
-        $data = json_decode(json_encode($this->data), true);
-
-        ksort($data);
-
-        return $data;
+        return json_decode(json_encode($this->data), true);
     }
 
     /**
