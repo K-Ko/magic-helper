@@ -25,20 +25,39 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      *
      * @link https://php.net/manual/en/function.json-decode.php
      *
-     * @param string $input The JSON string being decoded. This function only works with UTF-8 encoded strings.
+     * @param string $data  The JSON string being decoded. This function only works with UTF-8 encoded strings.
      * @param int    $depth User specified recursion depth.
      * @param int    $flags Bitmask of JSON decode options JSON_*
      */
-    public static function fromJSON(string $input, int $depth = 512, int $flags = 0): Magic
+    public static function fromJSON(string $data, int $depth = 512, int $flags = 0): Magic
     {
         // Decode always to an associative array as expected by constructor
-        $input = json_decode($input, true, $depth, $flags);
+        $data = json_decode($data, true, $depth, $flags);
 
-        if (json_last_error() === JSON_ERROR_NONE) {
-            return new static($input);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new InvalidArgumentException(json_last_error_msg(), 100);
         }
 
-        throw new InvalidArgumentException(json_last_error_msg(), 100);
+        return new static($data);
+    }
+
+    /**
+     * Build a Magic instance from JSON file.
+     *
+     * @link https://php.net/manual/en/function.json-decode.php
+     *
+     * @param string $filename The filename with JSON being decoded.
+     *                         This function only works with UTF-8 encoded strings.
+     * @param int    $depth    User specified recursion depth.
+     * @param int    $flags    Bitmask of JSON decode options JSON_*
+     */
+    public static function fromJSONFile(string $filename, int $depth = 512, int $flags = 0): Magic
+    {
+        if (!is_file($filename)) {
+            throw new InvalidArgumentException('File not exists: ' . $filename, 101);
+        }
+
+        return static::fromJSON(file_get_contents($filename), $depth, $flags);
     }
 
     /**
