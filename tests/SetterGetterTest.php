@@ -62,6 +62,23 @@ final class SetterGetterTest extends TestCase
         $this->assertNull($magic['k']);
     }
 
+    public function testExistsDeleteMulti()
+    {
+        $magic = new Magic(['k1' => 'v1', 'k2' => 'v2', 'k3' => 'v3']);
+
+        $this->assertEquals(3, count($magic));
+        $this->assertTrue($magic->exists('k1', 'k2', 'k3'));
+        $this->assertFalse($magic->exists('k1', 'k2', 'k3', 'k4'));
+
+        $magic->delete('k1');
+
+        $this->assertEquals(2, count($magic));
+
+        $magic->delete('k2', 'k3');
+
+        $this->assertEquals(0, count($magic));
+    }
+
     public function testSetterGetterByMagicCall()
     {
         $magic = new Magic();

@@ -202,12 +202,14 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Delete a variable.
+     * Delete variable(s)
      */
-    public function delete(string $key): Magic
+    public function delete(string ...$keys): Magic
     {
-        if ($this->exists($key)) {
-            unset($this->data[$key]);
+        foreach ($keys as $key) {
+            if ($this->exists($key)) {
+                unset($this->data[$key]);
+            }
         }
 
         return $this;
@@ -224,11 +226,17 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Check if a variable is set.
+     * Check variable(s).
      */
-    public function exists(string $key): bool
+    public function exists(string ...$keys): bool
     {
-        return array_key_exists($key, $this->data);
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $this->data)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

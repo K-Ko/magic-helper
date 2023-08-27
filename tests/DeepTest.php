@@ -30,10 +30,7 @@ final class DeepTest extends TestCase
 
         $magic = new Magic($data);
 
-        // toArray() sorts by key!
-        $sorted = ['a' => ['k' => 'v'], 'k' => 'v'];
-
-        $this->assertSame($sorted, $magic->toArray());
+        $this->assertSame($data, $magic->toArray());
     }
 
     private function check(Magic $magic)
