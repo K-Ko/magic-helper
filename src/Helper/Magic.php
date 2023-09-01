@@ -177,6 +177,17 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
+     * Set a variable only if not defined or empty.
+     *
+     * @param string $key
+     * @param mixed  $value If is an array, it will be also stored as a Magic
+     */
+    public function setIfEmpty(string $key, $value): Magic
+    {
+        return (!array_key_exists($key, $this->data) || $this->data[$key] == '') ? $this->set($key, $value) : $this;
+    }
+
+    /**
      * Merge values to a variable.
      *
      * @throws Exception If $key exists and is not an Magic

@@ -91,6 +91,19 @@ final class SetterGetterTest extends TestCase
         $this->assertNull($magic->getInvalidKey());
     }
 
+    public function testSetterIfEmpty()
+    {
+        $magic = new Magic();
+
+        $magic->set('k', 'v');
+        $magic->setIfEmpty('k', 'w');
+        $this->assertEquals('v', $magic->get('k'));
+
+        $this->assertNull($magic->get('l'));
+        $magic->setIfEmpty('l', 'm');
+        $this->assertEquals('m', $magic->get('l'));
+    }
+
     private function check(Magic $magic)
     {
         $this->assertEquals(1, count($magic));
