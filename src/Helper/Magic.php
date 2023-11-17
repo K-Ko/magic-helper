@@ -237,7 +237,23 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Check variable(s).
+     * Check variable(s) exist
+     */
+    public function has(string ...$keys): bool
+    {
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $this->data)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check variable(s) exist
+     *
+     * @deprecated v3.0.0 Use has() instead
      */
     public function exists(string ...$keys): bool
     {
