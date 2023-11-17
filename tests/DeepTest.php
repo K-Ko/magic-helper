@@ -33,6 +33,24 @@ final class DeepTest extends TestCase
         $this->assertSame($data, $magic->toArray());
     }
 
+    public function testSort()
+    {
+        $magic = new Magic(['z' => 'z']);
+        $magic['a'] = 'a';
+        $magic['k'] = ['z' => 'z', 'a' => 'a'];
+
+        $this->assertSame((new Magic($magic->toArray(true)))->toArray(), $magic->toArray(true));
+    }
+
+    public function testSortAuto()
+    {
+        $magic = new Magic(['z' => 'z']);
+        $magic['a'] = 'a';
+        $magic['k'] = ['z' => 'z', 'a' => 'a'];
+
+        $this->assertSame(['a' => 'a', 'k' => ['a' => 'a', 'z' => 'z'], 'z' => 'z'], $magic->toArray(true));
+    }
+
     private function check(Magic $magic)
     {
         $this->assertEquals(2, count($magic));

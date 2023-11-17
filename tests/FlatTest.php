@@ -59,8 +59,15 @@ final class FlatTest extends TestCase
         $magic = new Magic(['z' => 'z']);
         $magic['a'] = 'a';
 
-        $this->assertTrue($magic->sort());
-        $this->assertEquals(['a' => 'a', 'z' => 'z'], $magic->toArray());
+        $this->assertSame((new Magic($magic->toArray(true)))->toArray(), $magic->toArray(true));
+    }
+
+    public function testSortAuto()
+    {
+        $magic = new Magic(['z' => 'z']);
+        $magic['a'] = 'a';
+
+        $this->assertSame(['a' => 'a', 'z' => 'z'], $magic->toArray(true));
     }
 
     private function check(Magic $magic)

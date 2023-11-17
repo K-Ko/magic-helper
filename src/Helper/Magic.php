@@ -160,7 +160,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function get(string $key, $default = null)
     {
-        return $this->exists($key) ? $this->data[$key] : $default;
+        return $this->has($key) ? $this->data[$key] : $default;
     }
 
     /**
@@ -197,7 +197,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function merge(string $key, array $values): Magic
     {
-        $this->exists($key) || $this->set($key, new self());
+        $this->has($key) || $this->set($key, new self());
 
         $value = $this->get($key);
 
@@ -218,7 +218,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     public function delete(string ...$keys): Magic
     {
         foreach ($keys as $key) {
-            if ($this->exists($key)) {
+            if ($this->has($key)) {
                 unset($this->data[$key]);
             }
         }
@@ -295,7 +295,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function __isset(string $key): bool
     {
-        return $this->exists($key);
+        return $this->has($key);
     }
 
     public function __call(string $name, array $arguments)
@@ -338,7 +338,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function offsetExists($offset): bool
     {
-        return $this->exists($offset);
+        return $this->has($offset);
     }
 
     /**
@@ -396,11 +396,20 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Gets whole data as array, sort keys
+     * Gets whole data as array
+     *
+     * Rebuild a sorted Magic: $var = new \Helper\Magic($var->toArray(true));
+     *
+     * @param bool $ksort Sort recursive by keys
      */
-    public function toArray(): array
+    public function toArray(bool $ksort = false): array
     {
-        return json_decode(json_encode($this->data), true);
+        // Work on copied data
+        $array = json_decode(json_encode($this->data), true);
+
+        $ksort && $this->ksortRecursive($array);
+
+        return $array;
     }
 
     /**
@@ -415,13 +424,36 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Sort data by keys
+     * Sort data by keys recursive
      *
-     * @return bool
+     * @deprecated v3.0.0 Rebuild if needed instead: $var = new \Helper\Magic($var->toArray(true));
      */
-    public function sort(): bool
+    public function sort(): void
     {
-        return ksort($this->data);
+        $array = $this->toArray(true);
+
+        $this->data = [];
+
+        // Rebuild data
+        foreach ($array as $key => $value) {
+            $this->set($key, $value);
+        }
+    }
+
+    // ----------------------------------------------------------------------
+    // PROTECTED
+    // ----------------------------------------------------------------------
+
+    /**
+     * Sort data recursive by keys
+     */
+    protected function ksortRecursive(array &$array): void
+    {
+        ksort($array);
+
+        foreach (array_keys($array) as $key) {
+            is_array($array[$key]) && $this->ksortRecursive($array[$key]);
+        }
     }
 
     // ----------------------------------------------------------------------
