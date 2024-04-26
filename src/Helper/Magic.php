@@ -35,7 +35,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
         $data = json_decode($data, true, $depth, $flags);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new InvalidArgumentException(json_last_error_msg(), 100);
+            throw new InvalidArgumentException(__METHOD__ . '() ' . json_last_error_msg(), 100);
         }
 
         return new static($data);
@@ -75,7 +75,11 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public static function fromYAML(string $input, int $flags = 0): Magic
     {
-        return new static(Yaml::parse($input, $flags));
+        try {
+            return new static(Yaml::parse($input, $flags));
+        } catch (\Throwable $th) {
+            throw new InvalidArgumentException(__METHOD__ . '() ' . $th->getMessage(), 102);
+        }
     }
 
     /**
@@ -118,7 +122,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
             return new static($input);
         }
 
-        throw new InvalidArgumentException('Invalid INI string!', 101);
+        throw new InvalidArgumentException(__METHOD__ . '() Invalid INI string!', 103);
     }
 
     /**
@@ -398,7 +402,8 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     /**
      * Gets whole data as array
      *
-     * Rebuild a sorted Magic: $var = new \Helper\Magic($var->toArray(true));
+     * Rebuild a sorted Magic:
+     * $var = new \Helper\Magic($var->toArray(true));
      *
      * @param bool $ksort Sort recursive by keys
      */

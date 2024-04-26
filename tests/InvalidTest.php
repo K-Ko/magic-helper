@@ -8,7 +8,6 @@ use BadMethodCallException;
 use Helper\Magic;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Yaml\Exception\ParseException;
 
 final class InvalidTest extends TestCase
 {
@@ -22,7 +21,7 @@ final class InvalidTest extends TestCase
 
     public function testCreateFlatFromInvalidYaml()
     {
-        $this->expectException(ParseException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         Magic::fromYAML('> a');
     }
@@ -30,7 +29,7 @@ final class InvalidTest extends TestCase
     public function testCreateFlatFromInvalidIni()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionCode(101);
+        $this->expectExceptionCode(103);
 
         Magic::fromINI('a == a');
     }
