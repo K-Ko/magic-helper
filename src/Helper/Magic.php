@@ -42,6 +42,31 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
+     * Build a Magic instance from JSON string with comments.
+     *
+     * To load a JSON file use
+     *
+     * $magic = \Helper\Magic::fromJSONwithComments(file_get_contents('/path/to/file.json'));
+     *
+     * @link https://php.net/manual/en/function.json-decode.php
+     *
+     * @param string $data  The JSON string being decoded. This function only works with UTF-8 encoded strings.
+     * @param int    $depth User specified recursion depth.
+     * @param int    $flags Bitmask of JSON decode options JSON_*
+     */
+    public static function fromJSONwithComments(string $data, int $depth = 512, int $flags = 0): Magic
+    {
+        // Mask // im strings
+        $data = preg_replace('~("[^"\r\n]*)//([^"\r\n]*")~', '$1\\/\\/$2', $data);
+        // Remove comments
+        $data = preg_replace('~\s*//.*\s*$~m', '', $data);
+        // Restore masked //
+        $data = str_replace('\\/\\/', '//', $data);
+
+        return self::fromJSON($data);
+    }
+
+    /**
      * Build a Magic instance from JSON file.
      *
      * @link https://php.net/manual/en/function.json-decode.php
@@ -58,6 +83,25 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
         }
 
         return static::fromJSON(file_get_contents($filename), $depth, $flags);
+    }
+
+    /**
+     * Build a Magic instance from JSON file with comments.
+     *
+     * @link https://php.net/manual/en/function.json-decode.php
+     *
+     * @param string $filename The filename with JSON being decoded.
+     *                         This function only works with UTF-8 encoded strings.
+     * @param int    $depth    User specified recursion depth.
+     * @param int    $flags    Bitmask of JSON decode options JSON_*
+     */
+    public static function fromJSONFilewithComments(string $filename, int $depth = 512, int $flags = 0): Magic
+    {
+        if (!is_file($filename)) {
+            throw new InvalidArgumentException('File not exists: ' . $filename, 101);
+        }
+
+        return static::fromJSONwithComments(file_get_contents($filename), $depth, $flags);
     }
 
     /**

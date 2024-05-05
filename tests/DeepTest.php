@@ -54,16 +54,16 @@ final class DeepTest extends TestCase
     private function check(Magic $magic)
     {
         $this->assertEquals(2, count($magic));
-        $this->assertTrue($magic->exists('k'));
+        $this->assertTrue($magic->has('k'));
         $this->assertEquals('v', $magic['k']);
         $this->assertEquals('v', $magic->k);
         $this->assertEquals('v', $magic->get('k'));
 
         $this->assertInstanceOf(Magic::class, $magic['a']);
 
-        $this->assertTrue($magic['a']->exists('k'));
-        $this->assertTrue($magic->a->exists('k'));
-        $this->assertTrue($magic->get('a')->exists('k'));
+        $this->assertTrue($magic['a']->has('k'));
+        $this->assertTrue($magic->a->has('k'));
+        $this->assertTrue($magic->get('a')->has('k'));
 
         $this->assertEquals('v', $magic['a']['k']);
         $this->assertEquals('v', $magic['a']->k);

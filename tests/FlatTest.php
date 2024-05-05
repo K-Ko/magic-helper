@@ -19,6 +19,21 @@ final class FlatTest extends TestCase
         $this->check(Magic::fromJSON('{"k":"v"}'));
     }
 
+    public function testCreateFlatFromJsonWithComments()
+    {
+        $this->check(Magic::fromJSONwithComments('
+        {
+            // Comment
+            "k": "v"
+        }
+        '));
+    }
+
+    public function testCreateFlatFromJsonWithComment()
+    {
+        $this->check(Magic::fromJSONwithComments('{"k": "NO // comment!"}'), 'NO // comment!');
+    }
+
     public function testCreateFlatFromYaml()
     {
         $this->check(Magic::fromYAML('k: v'));
@@ -47,7 +62,7 @@ final class FlatTest extends TestCase
         $magic = new Magic();
 
         $this->assertEquals(0, count($magic));
-        $this->assertFalse($magic->exists('x'));
+        $this->assertFalse($magic->has('x'));
         $this->assertNull($magic['x']);
         $this->assertNull($magic->x);
         $this->assertNull($magic->get('x'));
@@ -70,13 +85,13 @@ final class FlatTest extends TestCase
         $this->assertSame(['a' => 'a', 'z' => 'z'], $magic->toArray(true));
     }
 
-    private function check(Magic $magic)
+    private function check(Magic $magic, string $value = 'v')
     {
         $this->assertEquals(1, count($magic));
-        $this->assertTrue($magic->exists('k'));
-        $this->assertEquals('v', $magic['k']);
-        $this->assertEquals('v', $magic->k);
-        $this->assertEquals('v', $magic->get('k'));
+        $this->assertTrue($magic->has('k'));
+        $this->assertEquals($value, $magic['k']);
+        $this->assertEquals($value, $magic->k);
+        $this->assertEquals($value, $magic->get('k'));
 
         $magic->clear();
         $this->assertEquals(0, count($magic));

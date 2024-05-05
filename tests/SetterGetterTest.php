@@ -43,9 +43,9 @@ final class SetterGetterTest extends TestCase
 
         $this->check($magic);
 
-        $this->assertTrue($magic->exists('k'));
+        $this->assertTrue($magic->has('k'));
         $magic->delete('k');
-        $this->assertFalse($magic->exists('k'));
+        $this->assertFalse($magic->has('k'));
     }
 
     public function testUnset()
@@ -53,12 +53,12 @@ final class SetterGetterTest extends TestCase
         $magic = new Magic(['k' => 'v']);
 
         $this->assertEquals(1, count($magic));
-        $this->assertTrue($magic->exists('k'));
+        $this->assertTrue($magic->has('k'));
 
         unset($magic['k']);
 
         $this->assertEquals(0, count($magic));
-        $this->assertFalse($magic->exists('k'));
+        $this->assertFalse($magic->has('k'));
         $this->assertNull($magic['k']);
     }
 
@@ -67,8 +67,8 @@ final class SetterGetterTest extends TestCase
         $magic = new Magic(['k1' => 'v1', 'k2' => 'v2', 'k3' => 'v3']);
 
         $this->assertEquals(3, count($magic));
-        $this->assertTrue($magic->exists('k1', 'k2', 'k3'));
-        $this->assertFalse($magic->exists('k1', 'k2', 'k3', 'k4'));
+        $this->assertTrue($magic->has('k1', 'k2', 'k3'));
+        $this->assertFalse($magic->has('k1', 'k2', 'k3', 'k4'));
 
         $magic->delete('k1');
 
@@ -85,7 +85,7 @@ final class SetterGetterTest extends TestCase
 
         $magic->setCompoundKey('v');
 
-        $this->assertTrue($magic->exists('compound_key'));
+        $this->assertTrue($magic->has('compound_key'));
         $this->assertEquals('v', $magic->getCompoundKey());
 
         $this->assertNull($magic->getInvalidKey());
@@ -107,7 +107,7 @@ final class SetterGetterTest extends TestCase
     private function check(Magic $magic)
     {
         $this->assertEquals(1, count($magic));
-        $this->assertTrue($magic->exists('k'));
+        $this->assertTrue($magic->has('k'));
         $this->assertEquals('v', $magic['k']);
         $this->assertEquals('v', $magic->k);
         $this->assertEquals('v', $magic->get('k'));

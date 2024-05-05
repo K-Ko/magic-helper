@@ -39,7 +39,7 @@ final class LoadSaveTest extends TestCase
         $magic = Magic::fromFile(self::$filename);
 
         $this->assertEquals(1, count($magic));
-        $this->assertTrue($magic->exists('k'));
+        $this->assertTrue($magic->has('k'));
         $this->assertEquals('v', $magic['k']);
         $this->assertEquals('v', $magic->k);
         $this->assertEquals('v', $magic->get('k'));
