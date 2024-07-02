@@ -208,7 +208,17 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function get(string $key, $default = null)
     {
-        return $this->has($key) ? $this->data[$key] : $default;
+        if (isset($this->protect[$key])) {
+            return $this->protect[$key];
+        }
+
+        $value = $this->has($key) ? $this->data[$key] : $default;
+
+        if (is_callable($value)) {
+            $this->data[$key] = $value = call_user_func($value, $this);
+        }
+
+        return $value;
     }
 
     /**
@@ -233,6 +243,20 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     public function setIfEmpty(string $key, $value): Magic
     {
         return (!array_key_exists($key, $this->data) || $this->data[$key] == '') ? $this->set($key, $value) : $this;
+    }
+
+    /**
+     * Store a callable.
+     *
+     * @param string $key
+     * @param callable $value
+     * @return Magic
+     */
+    public function protect(string $key, callable $value): Magic
+    {
+        $this->protect[$key] = $value;
+
+        return $this;
     }
 
     /**
@@ -267,7 +291,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     {
         foreach ($keys as $key) {
             if ($this->has($key)) {
-                unset($this->data[$key]);
+                unset($this->data[$key], $this->protect[$key]);
             }
         }
 
@@ -279,7 +303,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function clear(): Magic
     {
-        $this->data = [];
+        $this->data = $this->protect = [];
 
         return $this;
     }
@@ -288,22 +312,6 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * Check variable(s) exist
      */
     public function has(string ...$keys): bool
-    {
-        foreach ($keys as $key) {
-            if (!array_key_exists($key, $this->data)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Check variable(s) exist
-     *
-     * @deprecated v3.0.0 Use has() instead
-     */
-    public function exists(string ...$keys): bool
     {
         foreach ($keys as $key) {
             if (!array_key_exists($key, $this->data)) {
@@ -472,23 +480,6 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
         return file_put_contents($filename, self::$marker . PHP_EOL . serialize($this->data));
     }
 
-    /**
-     * Sort data by keys recursive
-     *
-     * @deprecated v3.0.0 Rebuild if needed instead: $var = new \Helper\Magic($var->toArray(true));
-     */
-    public function sort(): void
-    {
-        $array = $this->toArray(true);
-
-        $this->data = [];
-
-        // Rebuild data
-        foreach ($array as $key => $value) {
-            $this->set($key, $value);
-        }
-    }
-
     // ----------------------------------------------------------------------
     // PROTECTED
     // ----------------------------------------------------------------------
@@ -516,4 +507,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 
     /** @var array */
     private $data;
+
+    /** @var array */
+    private $protect = [];
 }
