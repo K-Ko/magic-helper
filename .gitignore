@@ -1,2 +1,4 @@
+.dev/
+.vscode/
 coverage/
 vendor/
