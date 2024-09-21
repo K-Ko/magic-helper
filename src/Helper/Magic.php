@@ -16,6 +16,8 @@ use Traversable;
 
 class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable, Stringable
 {
+    public $withCallables = true;
+
     /**
      * Build a Magic instance from JSON string.
      *
@@ -214,7 +216,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 
         $value = $this->has($key) ? $this->data[$key] : $default;
 
-        if (is_callable($value)) {
+        if ($this->withCallables && is_callable($value)) {
             $this->data[$key] = $value = call_user_func($value, $this);
         }
 

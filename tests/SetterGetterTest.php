@@ -104,6 +104,15 @@ final class SetterGetterTest extends TestCase
         $this->assertEquals('m', $magic->get('l'));
     }
 
+    public function testSetterReservedNames()
+    {
+        $magic = new Magic();
+        $magic->withCallables = false;
+
+        $magic->set('name', 'Max');
+        $this->assertEquals('Max', $magic->get('name'));
+    }
+
     private function check(Magic $magic)
     {
         $this->assertEquals(1, count($magic));

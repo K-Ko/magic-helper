@@ -32,6 +32,18 @@ final class CallableTest extends TestCase
         $this->assertEquals($magic->get('pid'), $magic->get('pid'));
     }
 
+    public function testNotCallable()
+    {
+        global $UUID4;
+
+        $magic = new Magic();
+        $magic->withCallables = false;
+
+        $magic->set('pid', $UUID4);
+
+        $this->assertIsCallable($magic->get('pid'));
+    }
+
     public function testProtect()
     {
         global $UUID4;
