@@ -113,6 +113,34 @@ final class SetterGetterTest extends TestCase
         $this->assertEquals('Max', $magic->get('name'));
     }
 
+    public function testTypes()
+    {
+        $magic = new Magic();
+        $magic->withCallables = false;
+
+        // Possibles values for the returned string are: "boolean" "integer" "double" (for historical reasons
+        // "double" is returned in case of a float, and not simply "float") "string" "array" "object" "resource"
+        // "NULL" "unknown type" "resource (closed)" since 7.2.0
+
+        $magic->set('key', true);
+        $this->assertEquals('boolean', $magic->type('key'));
+
+        $magic->set('key', 0);
+        $this->assertEquals('integer', $magic->type('key'));
+
+        $magic->set('key', 1.1);
+        $this->assertEquals('double', $magic->type('key'));
+
+        $magic->set('key', 'Max');
+        $this->assertEquals('string', $magic->type('key'));
+
+        $magic->set('key', []); // Converted to a Magic
+        $this->assertEquals('object', $magic->type('key'));
+
+        $magic->set('key', new Magic());
+        $this->assertEquals('object', $magic->type('key'));
+    }
+
     private function check(Magic $magic)
     {
         $this->assertEquals(1, count($magic));

@@ -325,6 +325,20 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
+     * Get the value type for a key
+     *
+     * @return string|null NULL if key not exists
+     */
+    public function type(string $key)
+    {
+        if (!$this->has($key)) {
+            return null;
+        }
+
+        return gettype($this->get($key));
+    }
+
+    /**
      * Magic method for get.
      */
     public function __get(string $key)
