@@ -248,6 +248,22 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
+     * Copy a value from one key to another.
+     *
+     * @param string $from   Copy from
+     * @param string $to     Copy to
+     * @param bool   $always Copy always, overwrite or only if $to don't exists
+     */
+    public function copy(string $from, string $to, bool $always = true): Magic
+    {
+        if ($always || !$this->has($to)) {
+            $this->set($to, $this->get($from));
+        }
+
+        return $this;
+    }
+
+    /**
      * Store a callable.
      *
      * @param string $key
