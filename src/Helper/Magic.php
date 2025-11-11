@@ -237,6 +237,19 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
+     * Set a variable raw as is, no transform to Magic for array.
+     *
+     * @param string $key
+     * @param mixed  $value If is an array, it will be also stored as a Magic
+     */
+    public function setRaw(string $key, $value): Magic
+    {
+        $this->data[$key] = $value;
+
+        return $this;
+    }
+
+    /**
      * Set a variable only if not defined or empty.
      *
      * @param string $key
