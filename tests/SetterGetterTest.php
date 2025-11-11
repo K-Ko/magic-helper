@@ -141,6 +141,14 @@ final class SetterGetterTest extends TestCase
         $this->assertEquals('object', $magic->type('key'));
     }
 
+    public function testRaw()
+    {
+        $magic = new Magic();
+        $magic->setRaw('key', [0, 1]);
+
+        $this->assertIsArray($magic->get('key', [0, 1]));
+    }
+
     private function check(Magic $magic)
     {
         $this->assertEquals(1, count($magic));
