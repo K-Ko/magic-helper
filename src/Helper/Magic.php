@@ -31,7 +31,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param int    $depth User specified recursion depth.
      * @param int    $flags Bitmask of JSON decode options JSON_*
      */
-    public static function fromJSON(string $data, int $depth = 512, int $flags = 0): Magic
+    public static function fromJSON(string $data, int $depth = 512, int $flags = 0): static
     {
         // Decode always to an associative array as expected by constructor
         $data = json_decode($data, true, $depth, $flags);
@@ -56,7 +56,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param int    $depth User specified recursion depth.
      * @param int    $flags Bitmask of JSON decode options JSON_*
      */
-    public static function fromJSONwithComments(string $data, int $depth = 512, int $flags = 0): Magic
+    public static function fromJSONwithComments(string $data, int $depth = 512, int $flags = 0): static
     {
         // Mask // im strings
         $data = preg_replace('~("[^"\r\n]*)//([^"\r\n]*")~', '$1\\/\\/$2', $data);
@@ -78,7 +78,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param int    $depth    User specified recursion depth.
      * @param int    $flags    Bitmask of JSON decode options JSON_*
      */
-    public static function fromJSONFile(string $filename, int $depth = 512, int $flags = 0): Magic
+    public static function fromJSONFile(string $filename, int $depth = 512, int $flags = 0): static
     {
         if (!is_file($filename)) {
             throw new InvalidArgumentException('File not exists: ' . $filename, 101);
@@ -97,7 +97,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param int    $depth    User specified recursion depth.
      * @param int    $flags    Bitmask of JSON decode options JSON_*
      */
-    public static function fromJSONFilewithComments(string $filename, int $depth = 512, int $flags = 0): Magic
+    public static function fromJSONFilewithComments(string $filename, int $depth = 512, int $flags = 0): static
     {
         if (!is_file($filename)) {
             throw new InvalidArgumentException('File not exists: ' . $filename, 101);
@@ -119,7 +119,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param int    $flags A bit field of \Symfony\Component\Yaml\Yaml::PARSE_* constants
      *                      to customize the YAML parser behavior
      */
-    public static function fromYAML(string $input, int $flags = 0): Magic
+    public static function fromYAML(string $input, int $flags = 0): static
     {
         try {
             return new static(Yaml::parse($input, $flags));
@@ -135,7 +135,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      *
      * @param string $input The string being parsed
      */
-    public static function fromString(string $input): Magic
+    public static function fromString(string $input): static
     {
         parse_str($input, $data);
 
@@ -159,7 +159,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param int    $mode     Can either be INI_SCANNER_NORMAL (default) or INI_SCANNER_RAW.
      *                         If INI_SCANNER_RAW is supplied, then option values will not be parsed.
      */
-    public static function fromINI(string $input, bool $sections = false, int $mode = INI_SCANNER_NORMAL): Magic
+    public static function fromINI(string $input, bool $sections = false, int $mode = INI_SCANNER_NORMAL): static
     {
         // Suppress syntax error output
         $input = @parse_ini_string($input, $sections, $mode);
@@ -176,7 +176,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      *
      * @throws InvalidArgumentException If file not exists, is empty or not deserializable
      */
-    public static function fromFile(string $filename): Magic
+    public static function fromFile(string $filename): static
     {
         if (!file_exists($filename)) {
             throw new InvalidArgumentException('File not found: ' . $filename, 1);
@@ -229,7 +229,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param string $key
      * @param mixed  $value If is an array, it will be also stored as a Magic
      */
-    public function set(string $key, $value): Magic
+    public function set(string $key, $value): static
     {
         $this->data[$key] = is_array($value) ? new self($value) : $value;
 
@@ -242,7 +242,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param string $key
      * @param mixed  $value Store value as is, no transformation
      */
-    public function setRaw(string $key, $value): Magic
+    public function setRaw(string $key, $value): static
     {
         $this->data[$key] = $value;
 
@@ -255,7 +255,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param string $key
      * @param mixed  $value If is an array, it will be also stored as a Magic
      */
-    public function setIfEmpty(string $key, $value): Magic
+    public function setIfEmpty(string $key, $value): static
     {
         return (!array_key_exists($key, $this->data) || $this->data[$key] == '') ? $this->set($key, $value) : $this;
     }
@@ -267,7 +267,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param string $to     Copy to
      * @param bool   $always Copy always, overwrite or only if $to don't exists
      */
-    public function copy(string $from, string $to, bool $always = true): Magic
+    public function copy(string $from, string $to, bool $always = true): static
     {
         if ($always || !$this->has($to)) {
             $this->set($to, $this->get($from));
@@ -283,7 +283,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param callable $value
      * @return Magic
      */
-    public function protect(string $key, callable $value): Magic
+    public function protect(string $key, callable $value): static
     {
         $this->protect[$key] = $value;
 
@@ -298,7 +298,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      * @param string $key
      * @param array  $values Will be stored also as an Magic
      */
-    public function merge(string $key, array $values): Magic
+    public function merge(string $key, array $values): static
     {
         $this->has($key) || $this->set($key, new self());
 
@@ -318,7 +318,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     /**
      * Delete variable(s)
      */
-    public function delete(string ...$keys): Magic
+    public function delete(string ...$keys): static
     {
         foreach ($keys as $key) {
             if ($this->has($key)) {
@@ -332,7 +332,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     /**
      * Clear all variables.
      */
-    public function clear(): Magic
+    public function clear(): static
     {
         $this->data = $this->protect = [];
 
@@ -447,7 +447,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      *
      * Implements \ArrayAccess
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->get($offset);
     }
@@ -479,7 +479,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      *
      * Implements \JsonSerializable
      */
-    final public function jsonSerialize()
+    final public function jsonSerialize(): mixed
     {
         return $this->toArray();
     }

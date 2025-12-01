@@ -15,7 +15,7 @@
         "symfony/console": "^5.4"
     },
     "require": {
-        "php": ">=7.3",
+        "php": "^8",
         "symfony/yaml": "^5.3",
         "phpunit/php-code-coverage": "^9.2",
         "psr/http-message": "^1.0"
