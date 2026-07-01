@@ -198,8 +198,6 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
      */
     public function __construct(array $data = [])
     {
-        $this->data = [];
-
         foreach ($data as $key => $value) {
             $this->set($key, $value);
         }
@@ -551,7 +549,7 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     private static $marker = 'Magic.serialized';
 
     /** @var array */
-    private $data;
+    private $data = [];
 
     /** @var array */
     private $protect = [];
