@@ -277,9 +277,9 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     /**
      * Store a callable.
      *
-     * @param string $key
-     * @param callable $value
-     * @return Magic
+     * @param  string $key
+     * @param  callable $value
+     * @return static
      */
     public function protect(string $key, callable $value): static
     {
@@ -366,6 +366,20 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
+     * Move value from key $from to key $to and remove key $from
+     *
+     * @param string $from   NO deep key
+     * @param string $to     NO deep key
+     * @param bool   $always Create key $to always, also if key $from not exists
+     */
+    public function move(string $from, string $to, bool $always = false): self
+    {
+        ($always || $this->has($from)) && $this->set($to, $this->get($from));
+
+        return $this->remove($from);
+    }
+
+    /**
      * Magic method for get.
      */
     public function __get(string $key)
@@ -375,6 +389,9 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
 
     /**
      * Magic method for set.
+     *
+     * @param string $key
+     * @param mixed  $value If is an array, it will be also stored as a Magic
      */
     public function __set(string $key, $value)
     {
