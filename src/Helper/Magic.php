@@ -379,6 +379,22 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
+     * Take a variable out
+     *
+     * @param  string $key NO deep key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public function take(string $key, $default = null)
+    {
+        $value = $this->get($key, $default);
+
+        $this->delete($key);
+
+        return $value;
+    }
+
+    /**
      * Magic method for get.
      */
     public function __get(string $key)
