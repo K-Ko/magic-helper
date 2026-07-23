@@ -366,17 +366,16 @@ class Magic implements ArrayAccess, Countable, IteratorAggregate, JsonSerializab
     }
 
     /**
-     * Move value from key $from to key $to and remove key $from
+     * Rename key $from to key $to if exists
      *
-     * @param string $from   NO deep key
-     * @param string $to     NO deep key
-     * @param bool   $always Create key $to always, also if key $from not exists
+     * @param string $from NO deep key
+     * @param string $to   NO deep key
      */
-    public function move(string $from, string $to, bool $always = false): self
+    public function rename(string $from, string $to): self
     {
-        ($always || $this->has($from)) && $this->set($to, $this->get($from));
+        $this->has($from) && $this->set($to, $this->get($from));
 
-        return $this->remove($from);
+        return $this->delete($from);
     }
 
     /**
